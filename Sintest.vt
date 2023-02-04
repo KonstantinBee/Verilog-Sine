@@ -1,0 +1,81 @@
+`timescale 1ns/100ps
+module Sintest();
+reg clock = 1'd1;
+reg KEY0 = 1'd1;
+reg KEY1 = 1'd1;
+reg direction = 1'd1;
+wire [31:0] Sin;
+Sin SinX ( .clock(clock), .KEY0(KEY0), .KEY1(KEY1), .direction(direction), .Sin(Sin), .LED_reset(LED_reset), .LED_expense(LED_expense));
+real Y;
+real E;
+real M;
+real g;
+real w;
+real r;
+integer i;
+integer k;
+always @(*) begin
+    Y = 0;
+    E = 0;
+    M = 0;
+    for (i=1; i<=25; i=i+1)
+    begin
+    g = Sin[25-i]; 
+    Y = Y + g/(2**i);
+    end      
+    for (k=0; k<=5; k=k+1)
+    begin
+    w = Sin[25+k]; 
+    E = E + w*(2**k);
+    end
+    if (Sin[31] == 1 ) r = -1; else r = 1;
+    M=(E+Y)*r;     
+end 
+initial begin
+    $display("Ranning testbench");
+    #5 KEY0 = 0;
+    #5 KEY0 = 1;
+    #400 KEY1 =0;
+    #5 KEY1 =1;
+    #5 KEY1 =0;
+    #5 KEY1 =1;
+    #400 KEY1 =0;
+    #5 KEY1 =1;
+    #5 KEY1 =0;
+    #5 KEY1 =1;
+    #400 KEY1 =0;
+    #5 KEY0 = 0;
+    #5 KEY0 = 1;
+    #5 KEY0 = 0;
+    #5 KEY0 = 1;
+    #5 KEY1 =1;
+    #5 KEY1 =0;
+    #5 KEY1 =1;
+    #400 KEY1 =0;
+    #5 KEY1 =1;
+    #5 KEY1 =0;
+    #5 KEY1 =1;
+    #400 KEY1 =0;
+    #5 KEY1 =1;
+    #5 KEY1 =0;
+    #5 KEY1 =1;
+    #5 direction = 0'd0;
+    #400 KEY1 =0;
+    #5 KEY1 =1;
+    #5 KEY1 =0;
+    #5 KEY1 =1;
+    #400 KEY1 =0;
+    #5 KEY1 =1;
+    #5 KEY1 =0;
+    #5 KEY1 =1;
+    #400 KEY1 =0;
+    #5 KEY1 =1;
+    #5 KEY1 =0;
+    #5 KEY1 =1;
+    $display("Stoping testbench");
+    #1300 $stop();      
+end
+always begin
+    #(1.0/2) clock = !clock;
+end
+endmodule
